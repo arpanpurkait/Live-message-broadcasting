@@ -3,7 +3,7 @@
         <div>
             <a class="flex items-center gap-2" href="/">
                 <img class="h-6" src="/static/images/logo.svg" alt="Logo"/>
-                <span class="text-lg font-bold">Project Title</span>
+                <span class="text-lg font-bold">{{ PROJECT_TITLE }}</span>
             </a>
         </div>
         <nav class="block bg-gray-800 relative">
@@ -13,8 +13,8 @@
                 <li x-data="{ dropdownOpen: false }" class="relative">
                     <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">
                         {{ user.username }}
-                        <img class="h-8 w-8 rounded-full object-cover" 
-                        src="{% static user.profile.avatar|default:'images/avatar.svg' %}"/>
+                        <img class="h-8 w-8 rounded-full object-cover" src="{{ profile.avatar }}"/>
+                    {{ user.name }}
                     </a>
                     <div x-show="dropdownOpen" x-cloak class="absolute right-0 bg-white text-black shadow rounded-lg w-40 p-2 z-20"
                     x-transition:enter="duration-300 ease-out"
