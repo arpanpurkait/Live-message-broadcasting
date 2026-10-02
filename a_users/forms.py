@@ -5,8 +5,10 @@ from .models import Profile
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
+       
         exclude = ['user']
         widgets = {
             'image':forms.FileInput(),
-            'displayname':
+            'displayname':forms.TextInput(attrs={'placeholder':'ass display name'}),
+            'info': forms.Textarea(attrs={'rows':3,'placeholder':'add information'})
         }

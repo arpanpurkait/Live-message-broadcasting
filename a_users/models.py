@@ -9,14 +9,17 @@ class Profile(models.Model):
     displayname = models.CharField(max_length=20, null=True, blank=True)
     info = models.TextField(null=True, blank=True)
 
-    @property
+  
     def __str__(self):
-        def name(self):
-            if self.displayname:
-                name = self.dsiplayname
-            else:
-                name = self.user.username
-            return name
+        return str(self.user)
+
+    @property
+    def name(self):
+        if self.displayname:
+            name = self.displayname
+        else:
+            name = self.user.username
+
 
     @property
     def avatar(self):

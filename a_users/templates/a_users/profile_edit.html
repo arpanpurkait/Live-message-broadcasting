@@ -1,0 +1,100 @@
+{% extends 'layouts/box.html' %}
+{% load static %}
+{% block content %}
+
+<div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+    {% if onboarding %}
+    <h1 class="text-2xl font-bold mb-4">Complete your Profile</h1>
+    {% else %}
+    <h1 class="text-2xl font-bold mb-4">Edit your Profile</h1>
+    {% endif %}
+
+    <div class="text-center flex flex-col items-center">
+        <!-- Fixed: Added .url and fallback image -->
+        <img id="avatar" class="w-36 h-36 rounded-full object-cover my-4" 
+             src="{{ profile.avatar }}" 
+             alt="Profile Avatar"/>
+        
+        <div class="text-center max-w-md">
+            <!-- Fixed: Changed user.displayname to profile.displayname -->
+            <h1 id="displayname" class="text-xl font-bold">
+                {% if profile.displayname %}{{ profile.displayname }}{% else %}{{ user.username }}{% endif %}
+            </h1>
+            <div class="text-gray-400 mb-2 -mt-3">@{{ user.username }}</div>
+        </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="mt-6">
+        {% csrf_token %}
+        
+        <!-- Styled form fields instead of {{ form.as_p }} -->
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="id_avatar">
+                Profile Picture
+            </label>
+            <input type="file" name="image" id="id_avatar" accept="image/*"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="id_displayname">
+                Display Name
+            </label>
+            <input type="text" name="displayname" id="id_displayname" 
+                   value="{{ profile.displayname|default:'' }}"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="id_info">
+                Bio/Info
+            </label>
+            <textarea name="info" id="id_info" rows="3"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">{{ profile.info|default:'' }}</textarea>
+        </div>
+
+        <div class="flex items-center justify-between">
+            <button type="submit" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                Submit
+            </button>
+            
+            {% if onboarding %}
+            <a class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400" 
+               href="{% url 'home' %}">
+                Skip
+            </a>
+            {% else %}
+            <a class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400" 
+               href="{{ request.META.HTTP_REFERER }}">
+                Cancel
+            </a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<script>
+    // This updates the avatar preview
+    const fileInput = document.querySelector('input[type="file"]');
+    const image = document.querySelector('#avatar');
+
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+
+        if (file && file.type.includes('image')) {
+            const url = URL.createObjectURL(file);
+            image.src = url;
+        }
+    });
+
+    // This updates the display name preview
+    const display_nameInput = document.getElementById('id_displayname');
+    const display_nameOutput = document.getElementById('displayname');
+
+    display_nameInput.addEventListener('input', (event) => {
+        display_nameOutput.innerText = event.target.value || '{{ user.username }}';
+    });
+</script>
+
+{% endblock %}
